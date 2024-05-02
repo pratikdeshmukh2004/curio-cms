@@ -4,11 +4,9 @@ import {
   faDownload,
   faHandPointer,
   faPencilAlt,
-  faPencilSquare,
   faPlus,
   faSearch,
-  faTrash,
-  faTrashAlt,
+  faTrashAlt
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";

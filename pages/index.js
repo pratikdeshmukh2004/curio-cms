@@ -1,10 +1,7 @@
-import Image from "next/image";
-import { Inter } from "next/font/google";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDiagramProject } from "@fortawesome/free-solid-svg-icons";
-import { faHandPointer } from "@fortawesome/free-regular-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Inter } from "next/font/google";
 import Head from "next/head";
-import "@fortawesome/fontawesome-svg-core/styles.css";
 import Link from "next/link";
 
 const inter = Inter({ subsets: ["latin"] });
