@@ -1,19 +1,25 @@
 import Header from "@/components/Header";
 import NewDiagram from "@/components/NewDiagram";
 import {
+  faBan,
   faDownload,
   faHandPointer,
   faPencilAlt,
   faPlus,
   faSearch,
-  faTrashAlt
+  faSpinner,
+  faTrashAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import axios from "axios";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const Diagrams = () => {
-  const [diagrams, setDiagrams] = useState([]);
+  const [diagrams, setDiagrams] = useState(null);
+  const [search, setSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [activeEdit, setActiveEdit] = useState(null);
 
   const fetchDiagrams = async () => {
     const res = await fetch(
@@ -27,14 +33,52 @@ const Diagrams = () => {
     fetchDiagrams();
   }, []);
 
+  const handleDelete = async (id) => {
+    toast.loading("Deleting diagram...");
+    try {
+      axios
+        .delete(
+          `/api/diagrams?access_id=${process.env.NEXT_PUBLIC_ACCESS_ID}&id=${id}`,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data", // Important to set Content-Type as multipart/form-data
+            },
+          }
+        )
+        .then((response) => {
+          setIsOpen(false);
+          fetchDiagrams();
+          console.log("Response:", response.data);
+          toast.remove();
+          toast.success("Diagram deleted successfully");
+        })
+        .catch((error) => {
+          setIsOpen(false);
+          fetchDiagrams();
+          console.error("Error:", error);
+          toast.remove();
+          toast.error("Failed to delete diagram");
+        });
+    } catch (error) {
+      console.error("Internal server error:", error);
+      // Handle error
+    }
+  };
+
   return (
     <div>
       <Header />
-      <NewDiagram isOpen={isOpen} fetchDiagrams={fetchDiagrams} setIsOpen={setIsOpen} />
+      <NewDiagram
+        isOpen={isOpen}
+        fetchDiagrams={fetchDiagrams}
+        setIsOpen={setIsOpen}
+        activeEdit={activeEdit}
+        setActiveEdit={setActiveEdit}
+      />
       <section className="lg:px-20 px-3 py-10">
         <div className="flex lg:flex-row flex-col justify-between">
           <h1 className="font-extrabold text-2xl text-gray-800">Diagrams</h1>
-          <div className="flex lg:flex-row flex-col-reverse items-center gap-3 lg:gap-8 lg:py-0 py-5">
+          <div className="flex lg:flex-row flex-col-reverse gap-3 lg:gap-5 lg:py-0 py-5">
             <form class="flex w-full lg:max-w-sm mx-auto">
               <label for="simple-search" class="sr-only">
                 Search
@@ -58,20 +102,22 @@ const Diagrams = () => {
                   </svg>
                 </div>
                 <input
+                  onChange={(e) => setSearch(e.target.value)}
+                  value={search}
                   type="text"
                   id="simple-search"
-                  class="bg-gray-50 outline-none border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  "
+                  class="bg-gray-50 font-medium outline-none border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  "
                   placeholder="Search diagram..."
                   required
                 />
               </div>
-              <button
-                type="submit"
+              {/* <button
+                type="button"
                 class="text-gray-700 ml-2 flex items-center justify-center hover:text-white border border-gray-500 hover:bg-sky-500 hover:border-sky-500 focus:ring-4 focus:outline-none focus:ring-sky-300 font-bold rounded-lg text-sm px-3 py-2.5 text-center me-2 mb-2"
               >
                 <FontAwesomeIcon size="lg" icon={faSearch} />
                 <span class="sr-only">Search</span>
-              </button>
+              </button> */}
             </form>
 
             <button
@@ -109,35 +155,90 @@ const Diagrams = () => {
               </tr>
             </thead>
             <tbody>
-              {diagrams?.map((diagram) => (
+              {diagrams && diagrams.length === 0 && (
                 <tr class="bg-white border-b font-medium whitespace-nowrap text-gray-900 border-gray-300">
-                  <th scope="row" class="px-6 py-4">
-                    {diagram.id}
-                  </th>
-                  <td class="px-6 py-4">{diagram.name}</td>
-                  <td class="px-6 py-4">{diagram.intro}</td>
-                  <td class="px-6 py-4">
-                    <span class="hover:text-sky-500 hover:border-sky-500 text-gray-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded me-2 cursor-pointer">
-                      <FontAwesomeIcon className="mr-2" icon={faDownload} />
-                      {diagram.image_name}
-                    </span>
-                  </td>
-                  <td class="px-6 py-4">
-                    <span class="bg-gray-100 hover:text-sky-500 hover:border-sky-500 text-gray-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded me-2 cursor-pointer border border-gray-500 ">
-                      <FontAwesomeIcon className="mr-2" icon={faHandPointer} />
-                      {diagram.pointers.length} Pointers
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 flex gap-5 text-lg">
-                    <button class="text-sky-500 hover:text-sky-700 hover:scale-110">
-                      <FontAwesomeIcon icon={faPencilAlt} />
-                    </button>
-                    <button class="text-rose-500 hover:text-orange-700 hover:scale-110">
-                      <FontAwesomeIcon icon={faTrashAlt} />
-                    </button>
+                  <td
+                    class="px-6 animate-pulse bg-rose-50 py-4 text-center text-rose-500"
+                    colSpan="6"
+                  >
+                    <FontAwesomeIcon icon={faBan} className="mr-2" />
+                    No diagrams found
                   </td>
                 </tr>
-              ))}
+              )}
+              {diagrams == null && (
+                <tr class="bg-white border-b font-medium whitespace-nowrap text-gray-900 border-gray-300">
+                  <td
+                    class="px-6 py-4 text-center bg-gray-50 animate-pulse"
+                    colSpan="6"
+                  >
+                    <FontAwesomeIcon
+                      icon={faSpinner}
+                      className="mr-2 animate-spin"
+                    />
+                    Loading...
+                  </td>
+                </tr>
+              )}
+              {diagrams &&
+                diagrams
+                  ?.filter(
+                    (item) =>
+                      item.name
+                        .toLowerCase()
+                        .includes(search.toLocaleLowerCase()) ||
+                      item.id.includes(search) ||
+                      item.intro
+                        .toLowerCase()
+                        .includes(search.toLocaleLowerCase())
+                  )
+                  ?.map((diagram) => (
+                    <tr class="bg-white border-b font-medium whitespace-nowrap text-gray-900 border-gray-300">
+                      <th scope="row" class="px-6 py-4">
+                        {diagram.id}
+                      </th>
+                      <td class="px-6 py-4">{diagram.name}</td>
+                      <td class="px-6 py-4 max-w-sm truncate">
+                        {diagram.intro}
+                      </td>
+                      <td class="px-6 py-4">
+                        {diagram.image_name ? (
+                          <span class="hover:text-sky-500 hover:border-sky-500 text-gray-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded me-2 cursor-pointer">
+                            <FontAwesomeIcon
+                              className="mr-2"
+                              icon={faDownload}
+                            />
+                            {diagram.image_name}
+                          </span>
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                      <td class="px-6 py-4">
+                        <span class="bg-gray-100 hover:text-sky-500 hover:border-sky-500 text-gray-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded me-2 cursor-pointer border border-gray-500 ">
+                          <FontAwesomeIcon
+                            className="mr-2"
+                            icon={faHandPointer}
+                          />
+                          {diagram.pointers.length} Pointers
+                        </span>
+                      </td>
+                      <td class="px-6 py-4 flex gap-5 text-lg">
+                        <button
+                          onClick={() => setActiveEdit(diagram)}
+                          class="text-sky-500 hover:text-sky-700 hover:scale-110"
+                        >
+                          <FontAwesomeIcon icon={faPencilAlt} />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(diagram._id)}
+                          class="text-rose-500 hover:text-orange-700 hover:scale-110"
+                        >
+                          <FontAwesomeIcon icon={faTrashAlt} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
             </tbody>
           </table>
         </div>
