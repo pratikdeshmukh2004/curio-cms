@@ -16,7 +16,7 @@ const Pointers = () => {
   const [pointers, setPointers] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [values, setValues] = useState({});
-  const [TMode, setTMode] = useState(true);
+  const [TMode, setTMode] = useState(false);
 
   const row = 14;
   const col = 25;
