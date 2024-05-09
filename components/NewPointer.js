@@ -96,6 +96,23 @@ export default function NewPointer({
                       <div class="grid gap-4 mb-4 grid-cols-2">
                         <div class="col-span-2">
                           <label
+                            for="id"
+                            class="block mb-2 text-sm font-medium text-gray-900"
+                          >
+                            Diagram ID
+                          </label>
+                          <input
+                            type="number"
+                            name="id"
+                            value={values.id}
+                            id="id"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none focus:border-gray-600 block w-full p-2.5 placeholder-gray-400"
+                            placeholder="Type diagram ID"
+                            required
+                          />
+                        </div>
+                        <div class="col-span-2">
+                          <label
                             for="introduction"
                             class="block mb-2 text-sm font-medium text-gray-900"
                           >

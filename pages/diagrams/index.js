@@ -193,7 +193,8 @@ const Diagrams = () => {
                         .toLowerCase()
                         .includes(search.toLocaleLowerCase())
                   )
-                  ?.map((diagram) => (
+                  ?.reverse()
+                  .map((diagram) => (
                     <tr class="bg-white border-b font-medium whitespace-nowrap text-gray-900 border-gray-300">
                       <th scope="row" class="px-6 py-4">
                         {diagram.id}

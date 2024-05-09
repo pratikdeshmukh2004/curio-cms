@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const Pointers = () => {
   const [pointers, setPointers] = useState(null);
@@ -25,11 +26,15 @@ const Pointers = () => {
   const { id } = router.query;
 
   const fetchPointers = async () => {
+    toast.loading("Fetching pointers...");
     const res = await fetch(
       `/api/pointers?access_id=${process.env.NEXT_PUBLIC_ACCESS_ID}&id=${id}`
     );
     const data = await res.json();
     setPointers(data);
+    setTimeout(() => {
+      toast.remove();
+    }, 1000);
   };
 
   useEffect(() => {
