@@ -77,7 +77,7 @@ const Pointers = () => {
           </div>
         </div>
 
-        <div className="flex flex-wrap overflow-auto lg:overflow-visible">
+        <div className="flex flex-wrap py-5 overflow-auto lg:overflow-visible">
           {/* Render 25 columns and 14 rows */}
           {!TMode &&
             [...Array(row)].map((_, rowIndex) => (
