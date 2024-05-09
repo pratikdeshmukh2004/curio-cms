@@ -12,6 +12,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -215,13 +216,16 @@ const Diagrams = () => {
                         )}
                       </td>
                       <td class="px-6 py-4">
-                        <span class="bg-gray-100 hover:text-sky-500 hover:border-sky-500 text-gray-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded me-2 cursor-pointer border border-gray-500 ">
+                        <Link
+                          href={`/pointers?id=${diagram._id}`}
+                          class="bg-gray-100 hover:text-sky-500 hover:border-sky-500 text-gray-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded me-2 cursor-pointer border border-gray-500 "
+                        >
                           <FontAwesomeIcon
                             className="mr-2"
                             icon={faHandPointer}
                           />
                           {diagram.pointers.length} Pointers
-                        </span>
+                        </Link>
                       </td>
                       <td class="px-6 py-4 flex gap-5 text-lg">
                         <button

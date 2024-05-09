@@ -1,5 +1,3 @@
-// pages/api/posts.js
-
 import { createRouter } from "next-connect";
 import { connectToDatabase } from "../../lib/db";
 import auth from "../../middleware/auth";
