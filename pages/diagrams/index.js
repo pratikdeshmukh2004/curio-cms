@@ -225,7 +225,7 @@ const Diagrams = () => {
                             className="mr-2"
                             icon={faHandPointer}
                           />
-                          {diagram.pointers.length} Pointers
+                          Pointers
                         </Link>
                       </td>
                       <td class="px-6 py-4 flex gap-5 text-lg">

@@ -20,19 +20,7 @@ router.use(auth);
 router.get(async (req, res) => {
   try {
     const db = await connectToDatabase();
-    const diagrams = await db
-      .collection("diagrams")
-      .aggregate([
-        {
-          $lookup: {
-            from: "pointers",
-            localField: "_id",
-            foreignField: "diagram_id",
-            as: "pointers",
-          },
-        },
-      ])
-      .toArray();
+    const diagrams = await db.collection("diagrams").find().toArray();
     res.status(200).json(diagrams);
   } catch (error) {
     console.error(error);
