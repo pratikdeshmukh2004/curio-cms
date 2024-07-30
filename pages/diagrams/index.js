@@ -6,6 +6,7 @@ import {
   faHandPointer,
   faPencilAlt,
   faPlus,
+  faPrint,
   faSearch,
   faSpinner,
   faTrashAlt,
@@ -65,6 +66,32 @@ const Diagrams = () => {
       // Handle error
     }
   };
+
+  const handleSelect = async (id) => {
+    toast.loading("Selecting diagram...");
+    try {
+      axios
+        .put(
+          `/api/clients?access_id=${process.env.NEXT_PUBLIC_ACCESS_ID}`,
+          {
+            active_diagram: id,
+          }
+        )
+        .then((response) => {
+          console.log("Response:", response.data);
+          toast.remove();
+          toast.success("Diagram selected successfully");
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          toast.remove();
+          toast.error("Failed to select diagram");
+        });
+    } catch (error) {
+      console.error("Internal server error:", error);
+      // Handle error
+    }
+  }
 
   return (
     <div>
@@ -229,6 +256,12 @@ const Diagrams = () => {
                         </Link>
                       </td>
                       <td class="px-6 py-4 flex gap-5 text-lg">
+                        <button
+                          onClick={() => handleSelect(diagram._id)}
+                          class="text-sky-500 hover:text-sky-700 hover:scale-110"
+                        >
+                          <FontAwesomeIcon icon={faPrint} />
+                        </button>
                         <button
                           onClick={() => setActiveEdit(diagram)}
                           class="text-sky-500 hover:text-sky-700 hover:scale-110"
