@@ -17,7 +17,11 @@ export default function Header() {
         <li className="text-gray-300 font-bold text-sm lg:text-md hover:text-sky-500 jersey-15-regular">
           <a href="/diagrams/create">Pointers</a>
         </li> */}
-        <li className="text-gray-300 font-bold hover:scale-125 cursor-pointer">
+        <li onClick={()=>{
+          localStorage.removeItem("token");
+          localStorage.removeItem("user_id");
+          window.location.href = "/";
+        }} className="text-gray-300 font-bold hover:scale-125 cursor-pointer">
           <FontAwesomeIcon className="text-2xl" icon={faUserCircle} />
         </li>
       </ul>

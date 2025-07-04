@@ -15,8 +15,8 @@ router.put(async (req, res) => {
     const data = { active_diagram: new ObjectId(req.body.active_diagram) };
     delete data._id;
     await db
-      .collection("clients")
-      .updateOne({ _id: new ObjectId("683aa3e5cf594c443df1a577")}, { $set: data });
+      .collection("users")
+      .updateOne({ _id: new ObjectId(req.body.user_id)}, { $set: data });
     return res
       .status(201)
       .json({ status: true, message: "Diagram updated successfully" });

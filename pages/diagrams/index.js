@@ -75,6 +75,7 @@ const Diagrams = () => {
           `/api/clients?access_id=${process.env.NEXT_PUBLIC_ACCESS_ID}`,
           {
             active_diagram: id,
+            user_id: localStorage.getItem("user_id"),
           }
         )
         .then((response) => {

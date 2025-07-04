@@ -9,6 +9,7 @@ import {
   useGoogleOneTapLogin,
 } from "@react-oauth/google";
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -166,21 +167,18 @@ body {
 }
 
 const GoogleLogin = () => {
-  const handleSuccess = (credentialResponse) => {
-    const token = credentialResponse.access_token;
-    fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((userInfo) => {
-        localStorage.setItem("user", JSON.stringify(userInfo));
-        window.location.href = "/diagrams";
-      })
-      .catch((error) => {
-        console.error("Failed to fetch user info: ", error);
-      });
+  const handleSuccess = async (response) => {
+    const { data } = await axios.post(
+      "https://dev-api.fikalearn.com/api/auth/google",
+      {},
+      {
+        headers: { Authorization: `Bearer ${response.access_token}` },
+      }
+    );
+    const user = data.data;
+    localStorage.setItem("token", user.token);
+    localStorage.setItem("user_id", user.user._id);
+    window.location.href = "/diagrams"; // Redirect to diagrams page
   };
 
   const login = useGoogleLogin({
